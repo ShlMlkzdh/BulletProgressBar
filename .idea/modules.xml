@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BulletProgressBar.iml" filepath="$PROJECT_DIR$/BulletProgressBar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BulletProgressBar.iml" filepath="$PROJECT_DIR$/BulletProgressBar.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bullet-progress-bar/bullet-progress-bar.iml" filepath="$PROJECT_DIR$/bullet-progress-bar/bullet-progress-bar.iml" />
       <module fileurl="file://$PROJECT_DIR$/bullet-progress-bar/bullet-progress-bar.iml" filepath="$PROJECT_DIR$/bullet-progress-bar/bullet-progress-bar.iml" />
     </modules>
   </component>

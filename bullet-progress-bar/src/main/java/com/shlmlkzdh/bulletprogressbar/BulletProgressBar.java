@@ -9,6 +9,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.util.ArrayList;
+
 
 public class BulletProgressBar extends View {
 
@@ -25,6 +27,8 @@ public class BulletProgressBar extends View {
     private float mShadowRadius;
     private int mLength;
     private int mProgress;
+    private boolean mLine;
+    private ArrayList<Integer> arrayListBulletColor;
 
     private Paint mBulletBackgroundPaint;
     private Paint mBulletPaint;
@@ -76,11 +80,17 @@ public class BulletProgressBar extends View {
                     DEFAULT_PROGRESS
             );
             mProgress = Math.min(mProgress, mLength);
+
         } finally {
             typedArray.recycle();
         }
 
         initialize();
+        mLine = false;
+        arrayListBulletColor = new ArrayList<Integer>();
+        for (int i=0; i < mProgress; i++){
+            arrayListBulletColor.add(mBulletColor);
+        }
 
     }
 
@@ -119,13 +129,15 @@ public class BulletProgressBar extends View {
 
         float radius = computeRadius(width, height);
 
-        canvas.drawRect(
-                radius + mBorderWidth + mShadowRadius,
-                (((float) height / 2f) - (radius / 4f)),
-                width - (radius + mBorderWidth + mShadowRadius),
-                (((float) height / 2f) + (radius / 4f)),
-                mBulletBackgroundPaint
-        );
+        if (mLine) {
+            canvas.drawRect(
+                    radius + mBorderWidth + mShadowRadius,
+                    (((float) height / 2f) - (radius / 4f)),
+                    width - (radius + mBorderWidth + mShadowRadius),
+                    (((float) height / 2f) + (radius / 4f)),
+                    mBulletBackgroundPaint
+            );
+        }
 
         float cellWidth = (width - (2 * (radius + mBorderWidth + mShadowRadius))) / (mLength - 1);
 
@@ -138,7 +150,7 @@ public class BulletProgressBar extends View {
             );
         }
 
-        if (mProgress >= 1) {
+        if (mProgress >= 1 && mLine) {
             canvas.drawRect(
                     radius + mBorderWidth + mShadowRadius,
                     (((float) height / 2f) - (radius / 4f)),
@@ -149,6 +161,7 @@ public class BulletProgressBar extends View {
         }
 
         for (int i = 0; i < mProgress; i++) {
+            mBulletPaint.setColor(arrayListBulletColor.get(i));
             canvas.drawCircle(
                     (radius + mBorderWidth + mShadowRadius) + (i * cellWidth),
                     height / 2,
@@ -156,6 +169,7 @@ public class BulletProgressBar extends View {
                     mBulletPaint
             );
         }
+        mBulletPaint.setColor(mBulletColor);
 
     }
 
@@ -186,6 +200,7 @@ public class BulletProgressBar extends View {
     public void setBulletBackgroundColor(int color) {
 
         mBulletBackgroundColor = color;
+        initialize();
         invalidate();
         requestLayout();
 
@@ -194,6 +209,7 @@ public class BulletProgressBar extends View {
     public void setBulletColor(int color) {
 
         mBulletColor = color;
+        initialize();
         invalidate();
         requestLayout();
 
@@ -225,6 +241,15 @@ public class BulletProgressBar extends View {
 
     public void setProgress(int progress) {
 
+        if (progress > mProgress) {
+            for (int i=mProgress; i<progress; i++){
+                arrayListBulletColor.add(mBulletColor);
+            }
+        } else if(progress < mProgress){
+            for (int i=mProgress; i>progress; i--){
+                arrayListBulletColor.remove(arrayListBulletColor.size()-1);
+            }
+        }
         mProgress = progress;
         invalidate();
         requestLayout();
@@ -238,4 +263,39 @@ public class BulletProgressBar extends View {
         );
     }
 
+    public void setLine(boolean mLine) {
+        this.mLine = mLine;
+        invalidate();
+        requestLayout();
+    }
+
+    public boolean getLine() {
+        return mLine;
+    }
+
+    public void increase(){
+        if(mProgress < mLength){
+            this.setProgress(mProgress+1);
+        }
+    }
+
+    public void increaseWithColor(int color){
+        if(mProgress < mLength){
+            arrayListBulletColor.add(color);
+            mProgress++;
+            invalidate();
+            requestLayout();
+            //this.setProgress(mProgress+1);
+        }
+    }
+
+    public void decrease(){
+        if (mProgress > 0){
+            arrayListBulletColor.remove(arrayListBulletColor.size()-1);
+            mProgress--;
+            invalidate();
+            requestLayout();
+            //this.setProgress(mProgress-1);
+        }
+    }
 }
